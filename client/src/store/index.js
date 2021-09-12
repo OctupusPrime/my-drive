@@ -7,19 +7,19 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    drive: new Tree({name: 'root'}),
+    drive: new Tree('root'),
     currentBranch: {},
 
     selectedFiles: {},
-    clipBoardFiles: {}
+    clipBoardFiles: []
   },
   mutations: {
     //drive
-    ADD_FOLDER(state, folder) {
-      state.drive.addFolder(folder, state.currentBranch)
+    ADD_FOLDER(state, name) {
+      state.drive.addFolder(name, state.currentBranch)
     },
     REMOVE_FOLDER(state, folderId) {
-      state.drive.removeFolder(folderId, state.currentBranch)
+      state.drive.removeFolder(folderId, state.currentBranch.id)
     },
     ADD_FILE(state, { name, type, data }) {
       state.drive.addFile(name, type, data, state.currentBranch)
@@ -28,31 +28,59 @@ export default new Vuex.Store({
     SET_BRANCH(state, branch) {
       state.currentBranch = branch
     },
-    //clip-board
-    SELECT_FILE(state, file) {
-      file.isSelected = true
-      state.selectedFiles = file
+    //selected
+    SELECT_FILE(state, params) {
+      if (state.selectedFiles.data) {
+        state.selectedFiles.data.forEach(element => element.isSelected = false)
+      }
+
+      let sliceIndex = []
+      if (!isNaN(state.selectedFiles.beginIndex) && params.multiple) {
+        sliceIndex = [state.selectedFiles.beginIndex, params.index]
+      }
+      else {
+        state.selectedFiles.beginIndex = params.index
+        sliceIndex = [params.index, params.index]
+      }
+
+      sliceIndex.sort()
+      sliceIndex[sliceIndex.length - 1]++
+
+      state.selectedFiles.data = state.currentBranch.children.slice(...sliceIndex)
+      state.selectedFiles.data.forEach(element => element.isSelected = true)
     },
+    CLEAR_SELECTED_FILE(state) {
+      if (state.selectedFiles.data) {
+        state.selectedFiles.data.forEach(element => element.isSelected = false)
+      }
+      state.selectedFiles = {}
+    },
+    //clip-board
     SET_CLIP_BOARD(state, isCut = false) {
-      state.selectedFiles.isCut = isCut
-      state.clipBoardFiles = state.drive.copyValsFromFolder(state.selectedFiles, state.currentBranch)
-      state.clipBoardFiles.isCut = isCut
-      console.log(state.clipBoardFiles === state.selectedFiles)
+      state.selectedFiles.data.forEach(element => element.isCut = isCut)
+      state.clipBoardFiles = JSON.parse(JSON.stringify(state.selectedFiles.data))
     },
     ADD_CLIP_FOLDER(state) {
-      if (state.clipBoardFiles.isCut) {
-        state.drive.removeFolder(state.clipBoardFiles.id, state.clipBoardFiles.parent)
+      if (state.clipBoardFiles.length) {
+        if (state.clipBoardFiles[0].isCut) {
+          state.clipBoardFiles.forEach(element => {
+            state.drive.removeFolder(
+              element.id, 
+              element.path[element.path.length - 2].id
+            )
+          })   
+        }
+        state.drive.addExistedFolder(
+          state.clipBoardFiles, 
+          state.currentBranch
+        )
       }
-      state.drive.addFolder(
-        state.clipBoardFiles, 
-        state.currentBranch
-      )
     }
   },
   actions: {
     //drive
-    storeAddFolder({commit}, folder) {
-      commit('ADD_FOLDER', folder)
+    storeAddFolder({commit}, name) {
+      commit('ADD_FOLDER', name)
     },
     storeRemoveFolder({ commit }, folderId) {
       commit('REMOVE_FOLDER', folderId)
@@ -68,20 +96,21 @@ export default new Vuex.Store({
     storeSelectFile({commit}, file) {
       commit('SELECT_FILE', file)
     },
+    storeClearSelectFile({commit}) {
+      commit('CLEAR_SELECTED_FILE')
+    },
     //clipBoard
     storeSetClipBoard({commit}, isCut) {
       commit('SET_CLIP_BOARD', isCut)
     },
     storeInsertClipBoard({commit}) {
+      commit('CLEAR_SELECTED_FILE')
       commit('ADD_CLIP_FOLDER')
     }
   },
   getters: {
     getFolder: (state) => (id) => {
       return state.drive.traverseBF(id)
-    },
-    getFolderPath: (state) => {
-      return state.drive.getFolderPath(state.currentBranch)
     }
   }
 })

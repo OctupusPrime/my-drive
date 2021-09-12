@@ -1,14 +1,18 @@
 <template>
-    <div>
+    <div @click="undoSelect($event)" style="min-height: 70vh">
         <FolderItemsList 
             :itemsArr="drive.children" 
-            @dbClickCallback="redirectToFile">
+            :isShift="isShiftPressed"
+            @dbClickCallback="redirectToFile"
+            v-if="drive.children.length">
             Folders
         </FolderItemsList>
 
         <FolderItemsList 
             :itemsArr="drive.data"
-            @dbClickCallback="openFile">
+            :isShift="isShiftPressed"
+            @dbClickCallback="openFile"
+            v-if="drive.data.length">
             Files
         </FolderItemsList>
 <!-- 
@@ -27,6 +31,9 @@ export default {
         FolderItemsList
         // FileOpened
     },
+    data: () => ({
+        isShiftPressed: false
+    }),
     computed: {
         ...mapState({storeDrive: 'drive'}),
         drive() {
@@ -35,7 +42,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['storeSetCurrentBranch']),
+        ...mapActions(['storeSetCurrentBranch', 'storeClearSelectFile']),
         redirectToFile(item) {
             const { id } = item
             this.$router.push({ name: 'Folder', params: { id } })
@@ -43,7 +50,21 @@ export default {
         openFile(item) {
             console.log(item)
             // this.$refs.openedFile.open(item)
+        },
+        undoSelect(e) {
+            const btn = e.target.closest('button')
+            if (!btn) {
+                this.storeClearSelectFile()
+            }
         }
+    },
+    mounted() {
+        window.addEventListener('keyup', (e) => {
+            this.isShiftPressed = e.shiftKey
+        })
+        window.addEventListener('keydown', (e) => {
+            this.isShiftPressed = e.shiftKey
+        })
     }
 }
 </script>

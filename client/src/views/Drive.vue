@@ -27,15 +27,15 @@
               </v-list-item>
             </v-list>
           </v-card>
-          <v-card rounded="2" class="mt-2">
+          <!-- <v-card rounded="2" class="mt-2">
             <v-card-title>Clip board</v-card-title>
             <v-card-text v-if="clipBoardFiles.childen">
               {{ clipBoardFiles.childen.length }}
             </v-card-text>
-          </v-card>
+          </v-card> -->
       </v-col>
       <v-col>
-        <v-card rounded="2" color="white" class="px-3 py-1" style="min-height: 70vh">
+        <v-card rounded="2" color="white" class="px-3 py-1">
           <FolderPath :pathArr="getFolderPath"></FolderPath>
 
           <router-view></router-view>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions    } from 'vuex'
 import FolderPath from '../components/FolderPath.vue'
 import FolderNameInpt from '../components/FolderNameInpt.vue'
 
@@ -73,8 +73,12 @@ import FolderNameInpt from '../components/FolderNameInpt.vue'
       }
     }),
     computed: {
-      ...mapGetters(['getFolderPath']),
-      ...mapState(['currentBranch', 'selectedFiles', 'clipBoardFiles'])
+      ...mapState(['currentBranch', 'selectedFiles', 'clipBoardFiles']),
+      getFolderPath() {
+        if (this.currentBranch.path)
+          return this.currentBranch.path.slice(1)
+        return []
+      }
     },
     methods: {
       ...mapActions([
@@ -86,13 +90,12 @@ import FolderNameInpt from '../components/FolderNameInpt.vue'
       ]),
       openCreateFolder() {
         this.$refs.FolderNameInpt.open()
-        
       },
       openUploadFiles() {
         this.$refs.fileInpt.click()
       },
       addFolder(name) {
-        this.storeAddFolder({name})
+        this.storeAddFolder(name)
       },
       convertToBase64() {
         const reader = new FileReader(),

@@ -1,19 +1,24 @@
 import { v4 as uuidv4 } from 'uuid';
 
 class Branch {
-    constructor(folder, parent) {
+    constructor(name, parent = undefined) {
         this.id = uuidv4()
-        this.name = folder.name
-        this.children = JSON.parse(JSON.stringify(folder.children || []))
-        this.data = JSON.parse(JSON.stringify(folder.data || []))
-        this.parent = parent
+        this.name = name
+        this.children = []
+        this.data = []
+        if (parent) {
+            this.path = [...parent.path, {name: this.name, id: this.id}]
+        }
+        else {
+            this.path = [{name: this.name, id: this.id}]
+        }
         this.isSelected = false
         this.isCut = false
     }
 }
 
 class File {
-    constructor(name, type,data) {   
+    constructor(name, type, data) {   
         this.id = uuidv4(),
         this.name = name,
         this.type = type,
@@ -22,13 +27,8 @@ class File {
 }
 
 export default class Tree {
-    constructor(data) {
-        if (data._root) {
-            this._root = data._root
-        }
-        else {
-            this._root = new Branch({name: 'root'}) 
-        }
+    constructor(name) {
+        this._root = new Branch(name) 
     }
     //Find
     traverseBF(value) {
@@ -48,20 +48,37 @@ export default class Tree {
     }
     
     //Folders
-    addFolder(folder, branch) {
-        branch.children.push(new Branch(folder, branch))
+    addFolder(name, branch) {
+        const folder = new Branch(name, branch)
+        branch.children.push(folder)
+        return folder
     }
-    removeFolder(id, branch) {
-        for (let i = 0; i < branch.children.length; i++) {
-            if (branch.children[i].id === id) {
-                branch.children.splice(i, 1)
+    removeFolder(id, branchId) {
+        const parent = this.traverseBF(branchId)
+        for (let i = 0; i < parent.children.length; i++) {
+            if (parent.children[i].id === id) {
+                parent.children.splice(i, 1)
             }
         }
     }
-    copyValsFromFolder(folder, branch) {
-        let copy = new Branch(folder, branch)
-        copy.id = folder.id
-        return copy
+    addExistedFolder(folder, branch) {
+        let queue = [...folder],
+            parentQueue = [branch]
+        while (queue.length) {
+            let node = queue.shift(),
+                parentNode = parentQueue[0]
+
+            const newFolder = this.addFolder(node.name, parentNode)
+            if (node.data) {
+                for (let item of node.data) {
+                    this.addFile(item.name, item.type, item.data, newFolder)
+                }
+            }
+            if (node.children.length) {
+                queue.push(...node.children)
+                parentQueue.unshift(newFolder)
+            }
+        }
     }
 
     //Files
@@ -74,22 +91,5 @@ export default class Tree {
                 return branch.data.splice(i, 1)
             }
         }       
-        return console.log(new Error('File does not exist'))      
-    }
-
-    //Find path
-    getFolderPath(branch) {
-        let path = [],
-            currentBranckh= branch
-        while(currentBranckh.parent)
-        {
-            path.push({
-                name: currentBranckh.name,
-                id: currentBranckh.id
-            })
-            currentBranckh = currentBranckh.parent
-
-        }
-        return path.reverse()
     }
 }

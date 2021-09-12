@@ -4,16 +4,16 @@
             <slot></slot>
         </h3>
         <v-row  class="my-2">
-            <v-btn  v-for="item in itemsArr" 
-                    :key="item.id"
-                    depressed
-                    outlined
-                    large
-                    class="text-capitalize ma-2 text-h6"
-                    :color="item.isSelected ? 'primary' : ''"
-                    :disabled="item.isCut ? true : false"
-                    @click="selectItem(item)"
-                    @dblclick="openItem(item)">
+            <v-btn  v-for="(item, index) in itemsArr" 
+                :key="item.id"
+                depressed
+                outlined
+                large
+                class="text-capitalize ma-2 text-h6"
+                :color="item.isSelected ? 'primary' : ''"
+                :disabled="item.isCut ? true : false"
+                @click="selectItem(index)"
+                @dblclick="openItem(item)">
                 <v-icon left>mdi-folder</v-icon>
                 {{item.name}}
             </v-btn>
@@ -29,14 +29,25 @@ export default {
         itemsArr: {
             type: Array,
             required: true
+        },
+        isShift: {
+            type: Boolean,
+            default: false
         }
     },
     methods: {
-        ...mapActions(['storeSelectFile']),
-        selectItem(item) {
-            this.storeSelectFile(item)
+        ...mapActions(['storeSelectFile', 'storeClearSelectFile']),
+        selectItem(index) {
+
+            if (this.isShift) {
+                this.storeSelectFile({type: 'folderIndex', index, multiple: true})
+            }
+            else {
+                this.storeSelectFile({type: 'folderIndex', index})  
+            }
         },
         openItem(item) {
+            this.storeClearSelectFile()
             this.$emit('dbClickCallback', item)
         }
     }

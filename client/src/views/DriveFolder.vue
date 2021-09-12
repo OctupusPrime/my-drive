@@ -1,13 +1,15 @@
 <template>
-    <div>
+    <div @click="undoSelect" style="min-height: 70vh">
         <FolderItemsList 
             :itemsArr="folder.children" 
-            @dbClickCallback="redirectToFile">
+            @dbClickCallback="redirectToFile"
+            v-if="folder.children.length">
             Folders
         </FolderItemsList>
 
         <FolderItemsList 
-            :itemsArr="folder.data">
+            :itemsArr="folder.data"
+            v-if="folder.data.length">
             Files
         </FolderItemsList>
     </div>
@@ -35,6 +37,9 @@ export default {
         redirectToFile(item) {
             const { id } = item
             this.$router.push({ name: 'Folder', params: { id } })
+        },
+        undoSelect() {
+            console.log(1)
         }
     }
 }

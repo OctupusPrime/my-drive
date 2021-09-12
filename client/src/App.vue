@@ -3,7 +3,11 @@
   <v-app-bar 
     app 
     flat>
-    <!-- -->
+    <v-container>
+      <v-toolbar-title class="font-weight-bold text-h5">
+        My Drive
+      </v-toolbar-title>  
+    </v-container>
   </v-app-bar>
 
   <v-main class="grey">

@@ -22,7 +22,6 @@ export default {
     name: 'FolderPath',
     props: {
         pathArr: {
-            type: Array,
             required: true
         }
     }
