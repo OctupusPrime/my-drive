@@ -63,10 +63,14 @@ export default class Tree {
     }
     addExistedFolder(folder, branch) {
         let queue = [...folder],
-            parentQueue = [branch]
+            parentQueue = []
+        for (let i = 0; i < queue.length; i++) {
+            parentQueue.push(branch)
+        }
+
         while (queue.length) {
             let node = queue.shift(),
-                parentNode = parentQueue[0]
+                parentNode = parentQueue.shift()
 
             const newFolder = this.addFolder(node.name, parentNode)
             if (node.data) {
@@ -74,9 +78,11 @@ export default class Tree {
                     this.addFile(item.name, item.type, item.data, newFolder)
                 }
             }
-            if (node.children.length) {
+            if (node.children) {
                 queue.push(...node.children)
-                parentQueue.unshift(newFolder)
+                for (let i = 0; i < node.children.length; i++) {
+                    parentQueue.push(newFolder)
+                }
             }
         }
     }
