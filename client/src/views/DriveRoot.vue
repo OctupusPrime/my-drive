@@ -18,7 +18,7 @@
             Files
         </FolderItemsList>
 
-        <FileOpened ref="openedFile"></FileOpened>
+        <FileOpened :file="currentFile" ref="openedFile"></FileOpened>
     </div>
 </template>
 
@@ -35,7 +35,7 @@ export default {
     },
     data: () => ({
         isShiftPressed: false,
-        quickMenuItems: []
+        currentFile: {}
     }),
     computed: {
         ...mapState({storeDrive: 'drive', selectedFiles: 'selectedFiles'}),
@@ -74,7 +74,8 @@ export default {
             }            
         },
         openFile(item) {
-            this.$refs.openedFile.open(item)
+            this.currentFile = item
+            this.$refs.openedFile.open()
         },
         undoSelect(e) {
             const btn = e.target.closest('button')

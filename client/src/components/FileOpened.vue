@@ -3,13 +3,12 @@
         v-model="isOpen"
         max-width="70vh">
         <v-card>
-        <v-card-text v-if="convertFromBase64" class="pa-3 text--primary text-body-1">
-            {{convertFromBase64}}
-        </v-card-text>
-        <v-img v-else
-            :src="`data:${file.type};base64,${file.data}`">
-        </v-img>
-
+            <v-card-text v-if="convertFromBase64" class="pa-3 text--primary text-body-1">
+                {{convertFromBase64}}
+            </v-card-text>
+            <v-img v-else
+                :src="`data:${file.type};base64,${file.data}`">
+            </v-img>
         </v-card>
     </v-dialog>
 </template>
@@ -18,9 +17,11 @@
 export default {
     name: 'FileOpened',
     data: () => ({
-        isOpen: false,
-        file: {}
+        isOpen: false
     }),
+    props: {
+        file: Object
+    },
     computed: {
         convertFromBase64() {
             if (this.file.type) {
@@ -37,8 +38,7 @@ export default {
         }
     },
     methods: {
-        open(obj) {
-            this.file = obj 
+        open() {
             this.isOpen = true
         },
         close() {
