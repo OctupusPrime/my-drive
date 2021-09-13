@@ -70,10 +70,10 @@
 
           <router-view></router-view>
 
-      <FolderNameInpt :title="NameInptConfig.title" 
-                      :callback="NameInptConfig.callback" 
-                      @addFolder="addFolder"
-                      ref="FolderNameInpt" /> 
+        <FolderNameInpt :title="NameInptConfig.title" 
+                        :callback="NameInptConfig.callback" 
+                        @addFolder="addFolder"
+                        ref="FolderNameInpt" /> 
         </v-card>
       </v-col>
     </v-row>
@@ -112,8 +112,10 @@ import FolderNameInpt from '../components/FolderNameInpt.vue'
     },
     methods: {
       ...mapActions([
+        'storeGetDrive',
         'storeAddFolder', 
         'storeAddFile', 
+        'storeDeleteSelectFile',
         'storeSetClipBoard', 
         'storeInsertClipBoard',
         'storeClearClipBoard'
@@ -147,21 +149,21 @@ import FolderNameInpt from '../components/FolderNameInpt.vue'
     },
     mounted() {
       let isCntr = false
-
+      this.storeGetDrive()
       window.addEventListener('keydown', (e) => {
         if (e.keyCode == 17 || e.keyCode == 91) {
           isCntr = true
         } 
-
+        if (e.keyCode === 46) {
+          this.storeDeleteSelectFile()
+        }
         if (isCntr) {
           switch(e.keyCode) {
             case 67:
               this.storeSetClipBoard()
               break;
             case 86: 
-              if (this.clipBoardFiles) {
                 this.storeInsertClipBoard()
-              }
               break;
             case 88:
               this.storeSetClipBoard(true)

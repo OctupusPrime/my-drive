@@ -5,7 +5,7 @@
             :itemsArr="folder.children" 
             @clickCallback="selectFolder"
             @dbClickCallback="openFolder"
-            v-if="folder.children.length">
+            v-if="folder.children">
             Folders
         </FolderItemsList>
 
@@ -14,7 +14,7 @@
             icon="mdi-file"
             @clickCallback="selectFile"
             @dbClickCallback="openFile"
-            v-if="folder.data.length">
+            v-if="folder.data">
             Files
         </FolderItemsList>
 

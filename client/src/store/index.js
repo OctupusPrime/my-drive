@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 
 import Tree from '../classes/Tree'
 
@@ -7,7 +8,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    drive: new Tree('root'),
+    drive: new Tree(),
     currentBranch: {},
 
     selectedFiles: {
@@ -17,13 +18,18 @@ export default new Vuex.Store({
     clipBoardFiles: {}
   },
   mutations: {
-    //drive
+    INIT_DRIVE(state, jsonDrive) {
+      state.drive = new Tree(jsonDrive)
+      console.log(state.drive)
+    },
+    //folders
     ADD_FOLDER(state, name) {
       state.drive.addFolder(name, state.currentBranch)
     },
     REMOVE_FOLDER(state, folderId) {
       state.drive.removeFolder(folderId, state.currentBranch.id)
     },
+    //file
     ADD_FILE(state, { name, type, data }) {
       state.drive.addFile(name, type, data, state.currentBranch)
     },
@@ -60,6 +66,24 @@ export default new Vuex.Store({
       if (state.selectedFiles.fileIndex.length) {
         state.selectedFiles.data = state.currentBranch.data.slice(...getArr(state.selectedFiles.fileIndex))
         state.selectedFiles.data.forEach(element => element.isSelected = true)
+      }
+    },
+    DELETE_SELECTED_FILE(state) {
+      if (state.selectedFiles.children) {
+        state.selectedFiles.children.forEach(element => {
+          state.drive.removeFolder(
+            element.id, 
+            element.path[element.path.length - 2].id
+          )
+        })      
+      }
+      if (state.selectedFiles.data) {
+        state.selectedFiles.data.forEach(element => {
+          state.drive.removeFile(
+            element.id, 
+            element.parentId
+          )
+        })   
       }
     },
     CLEAR_SELECTED_FILE(state) {
@@ -127,6 +151,10 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    async storeGetDrive({commit}) {
+      const drive = await axios.get('http://localhost:3000/api/drive')
+      commit('INIT_DRIVE', drive.data._root)
+    },
     //drive
     storeAddFolder({commit}, name) {
       commit('ADD_FOLDER', name)
@@ -144,6 +172,9 @@ export default new Vuex.Store({
     //selected
     storeSelectFile({commit}, file) {
       commit('SELECT_FILE', file)
+    },
+    storeDeleteSelectFile({commit}) {
+      commit('DELETE_SELECTED_FILE')
     },
     storeClearSelectFile({commit}) {
       commit('CLEAR_SELECTED_FILE')

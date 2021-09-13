@@ -30,8 +30,11 @@ class File {
 }
 
 export default class Tree {
-    constructor(name) {
-        this._root = new Branch(name) 
+    constructor(drive) {
+        if (drive)
+            this._root = drive
+        else 
+            this._root = new Branch('root')
     }
     //Find
     traverseBF(value) {
