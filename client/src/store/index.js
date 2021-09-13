@@ -114,12 +114,11 @@ export default new Vuex.Store({
     },
     //clip-board
     SET_CLIP_BOARD(state, isCut = false) {
-      if (isCut) {
-        this.commit('SET_SELECTED_FIELDS', {
+      this.commit('SET_SELECTED_FIELDS', {
           field: 'isCut',
-          value: true
-        })
-      }
+          value: isCut
+      })
+
       state.clipBoardFiles = JSON.parse(JSON.stringify(state.selectedFiles))
       state.clipBoardFiles.isCut = isCut
     },
@@ -138,11 +137,7 @@ export default new Vuex.Store({
       }
       if (state.clipBoardFiles.data) {
         state.clipBoardFiles.data.forEach(element => {
-          this.commit('ADD_FILE', {
-            name: element.name,
-            type: element.type,
-            data: element.data
-          })
+          this.commit('ADD_FILE', element)
         })  
       }
     }
