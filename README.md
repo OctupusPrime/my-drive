@@ -69,9 +69,9 @@ There not just simple back button but full path to folder
 Tired of creating folders to check
 - [x] **Add the ability to copy, paste and cut files**  
 First you need to select file and/or folders, then:
-    - Copy - <kbd>Shift</kbd> + <kbd>C</kbd>
-    - Paste - <kbd>Shift</kbd> + <kbd>S</kbd>
-    - Cut - <kbd>Shift</kbd> + <kbd>X</kbd>
+    - Copy - <kbd>Cntl</kbd> + <kbd>C</kbd>
+    - Paste - <kbd>Cntl</kbd> + <kbd>S</kbd>
+    - Cut - <kbd>Cntl</kbd> + <kbd>X</kbd>
 - [x] **Add file copy notification, add opacity 0.5 to cut file before moving it**  
 A clipboard appears in the left column
 - [x] **Make a server on node JS. The server just sends json**  
