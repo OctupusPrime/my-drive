@@ -34,8 +34,10 @@ export default {
         FolderItemsList,
         FileOpened
     },
+    props: {
+        isShiftPressed: Boolean
+    },
     data: () => ({
-        isShiftPressed: false,
         currentFile: {}
     }),
     computed: {

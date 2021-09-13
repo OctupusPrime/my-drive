@@ -57,8 +57,7 @@
                 text
                 color="red"
                 block
-                @click="clearClipBoard"
-              >
+                @click="storeClearClipBoard">
                 Clear
               </v-btn>
             </v-card-actions>
@@ -68,7 +67,7 @@
         <v-card rounded="2" color="white" class="px-3 py-1">
           <FolderPath :pathArr="getFolderPath"></FolderPath>
 
-          <router-view></router-view>
+          <router-view :isShiftPressed="isShift"></router-view>
 
         <FolderNameInpt :title="NameInptConfig.title" 
                         :callback="NameInptConfig.callback" 
@@ -100,7 +99,8 @@ import FolderNameInpt from '../components/FolderNameInpt.vue'
       NameInptConfig: {
         title: 'New folder',
         callback: 'addFolder'
-      }
+      },
+      isShift: false
     }),
     computed: {
       ...mapState(['currentBranch', 'clipBoardFiles']),
@@ -142,15 +142,15 @@ import FolderNameInpt from '../components/FolderNameInpt.vue'
                 data: reader.result.split(',')[1] 
             })
         })
-      },
-      clearClipBoard() {
-        this.storeClearClipBoard()
       }
+    },
+    created() {
+      this.storeGetDrive()
     },
     mounted() {
       let isCntr = false
-      this.storeGetDrive()
       window.addEventListener('keydown', (e) => {
+        this.isShift = e.shiftKey
         if (e.keyCode == 17 || e.keyCode == 91) {
           isCntr = true
         } 
@@ -173,6 +173,7 @@ import FolderNameInpt from '../components/FolderNameInpt.vue'
       })
 
       window.addEventListener('keyup', (e) => {
+        this.isShift = e.shiftKey
         if (e.keyCode == 17 || e.keyCode == 91) {
           isCntr = false;
         } 

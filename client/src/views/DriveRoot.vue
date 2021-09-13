@@ -33,8 +33,10 @@ export default {
         FolderItemsList,
         FileOpened
     },
+    props: {
+        isShiftPressed: Boolean
+    },
     data: () => ({
-        isShiftPressed: false,
         currentFile: {}
     }),
     computed: {
@@ -83,14 +85,6 @@ export default {
                 this.storeClearSelectFile()
             }
         }
-    },
-    mounted() {
-        window.addEventListener('keyup', (e) => {
-            this.isShiftPressed = e.shiftKey
-        })
-        window.addEventListener('keydown', (e) => {
-            this.isShiftPressed = e.shiftKey
-        })
     }
 }
 </script>
