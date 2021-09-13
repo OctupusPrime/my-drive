@@ -14,7 +14,7 @@
                 :disabled="item.isCut ? true : false"
                 @click="selectItem(index)"
                 @dblclick="openItem(item)">
-                <v-icon left>mdi-folder</v-icon>
+                <v-icon left>{{icon}}</v-icon>
                 {{item.name}}
             </v-btn>
         </v-row>
@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 export default {
     name: 'FolderItemsList',
     props: {
@@ -30,24 +29,16 @@ export default {
             type: Array,
             required: true
         },
-        isShift: {
-            type: Boolean,
-            default: false
+        icon: {
+            type: String,
+            default: 'mdi-folder'
         }
     },
     methods: {
-        ...mapActions(['storeSelectFile', 'storeClearSelectFile']),
         selectItem(index) {
-
-            if (this.isShift) {
-                this.storeSelectFile({type: 'folderIndex', index, multiple: true})
-            }
-            else {
-                this.storeSelectFile({type: 'folderIndex', index})  
-            }
+            this.$emit('clickCallback', index)
         },
         openItem(item) {
-            this.storeClearSelectFile()
             this.$emit('dbClickCallback', item)
         }
     }

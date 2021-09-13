@@ -18,11 +18,14 @@ class Branch {
 }
 
 class File {
-    constructor(name, type, data) {   
-        this.id = uuidv4(),
-        this.name = name,
-        this.type = type,
+    constructor(name, type, data, parentId) {   
+        this.id = uuidv4()
+        this.name = name
+        this.type = type
         this.data = data
+        this.parentId = parentId
+        this.isSelected = false
+        this.isCut = false
     }
 }
 
@@ -89,12 +92,13 @@ export default class Tree {
 
     //Files
     addFile(name, type, data, branch) {
-        branch.data.push(new File(name, type, data))
+        branch.data.push(new File(name, type, data, branch.id))
     }
-    removeFile(id, branch) {
-        for (let i = 0; i < branch.data.length; i++) {
-            if (branch.data[i].id === id) {
-                return branch.data.splice(i, 1)
+    removeFile(id, branchId) {
+        const parent = this.traverseBF(branchId)
+        for (let i = 0; i < parent.data.length; i++) {
+            if (parent.data[i].id === id) {
+                return parent.data.splice(i, 1)
             }
         }       
     }

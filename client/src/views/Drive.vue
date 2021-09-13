@@ -5,13 +5,12 @@
           <v-card rounded="2">
             <v-list
               dense
-              rounded
-            >
+              rounded>
               <v-list-item
                 link
                 @click="openCreateFolder">
                 <v-list-item-content>
-                  <v-list-item-title class="text-capitalize text-body-1" >
+                  <v-list-item-title class="text-body-1">
                     Create folder
                   </v-list-item-title>
                 </v-list-item-content>
@@ -20,19 +19,50 @@
                 link
                 @click="openUploadFiles">
                 <v-list-item-content>
-                  <v-list-item-title class="text-capitalize text-body-1">
+                  <v-list-item-title class="text-body-1">
                     Upload file
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
           </v-card>
-          <!-- <v-card rounded="2" class="mt-2">
-            <v-card-title>Clip board</v-card-title>
-            <v-card-text v-if="clipBoardFiles.childen">
-              {{ clipBoardFiles.childen.length }}
-            </v-card-text>
-          </v-card> -->
+          <v-card rounded="2" class="mt-2" v-if="clipBoardFiles.children  || clipBoardFiles.data">
+            <v-card-title class="pb-0 justify-center">Clip board</v-card-title>
+            <v-divider class="mt-2"></v-divider>
+            <v-list
+              dense>
+              <div v-if="clipBoardFiles.children">
+                <v-card-title class="py-0 text-h6">Folders</v-card-title>
+                  <v-list-item  v-for="item in clipBoardFiles.children" :key="item.id">
+                    <v-list-item-content> 
+                      <v-list-item-title class="text-body-1">
+                          {{item.name}}
+                      </v-list-item-title>          
+                    </v-list-item-content>
+                  </v-list-item>
+              </div>
+              <div v-if="clipBoardFiles.data">
+                <v-card-title class="py-0 text-h6">Files</v-card-title>
+                  <v-list-item  v-for="item in clipBoardFiles.data" :key="item.id">
+                    <v-list-item-content> 
+                      <v-list-item-title class="text-body-1">
+                          {{item.name}}
+                      </v-list-item-title>          
+                    </v-list-item-content>
+                  </v-list-item>
+              </div>
+            </v-list>
+            <v-card-actions class="pt-0">
+              <v-btn
+                text
+                color="red"
+                block
+                @click="clearClipBoard"
+              >
+                Clear
+              </v-btn>
+            </v-card-actions>
+          </v-card>
       </v-col>
       <v-col>
         <v-card rounded="2" color="white" class="px-3 py-1">
@@ -56,7 +86,7 @@
 </template>
 
 <script>
-import { mapState, mapActions    } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import FolderPath from '../components/FolderPath.vue'
 import FolderNameInpt from '../components/FolderNameInpt.vue'
 
@@ -73,7 +103,7 @@ import FolderNameInpt from '../components/FolderNameInpt.vue'
       }
     }),
     computed: {
-      ...mapState(['currentBranch', 'selectedFiles', 'clipBoardFiles']),
+      ...mapState(['currentBranch', 'clipBoardFiles']),
       getFolderPath() {
         if (this.currentBranch.path)
           return this.currentBranch.path.slice(1)
@@ -83,10 +113,10 @@ import FolderNameInpt from '../components/FolderNameInpt.vue'
     methods: {
       ...mapActions([
         'storeAddFolder', 
-        'storeSetCurrentBranch', 
         'storeAddFile', 
         'storeSetClipBoard', 
-        'storeInsertClipBoard'
+        'storeInsertClipBoard',
+        'storeClearClipBoard'
       ]),
       openCreateFolder() {
         this.$refs.FolderNameInpt.open()
@@ -111,6 +141,9 @@ import FolderNameInpt from '../components/FolderNameInpt.vue'
             })
         })
       },
+      clearClipBoard() {
+        this.storeClearClipBoard()
+      }
     },
     mounted() {
       let isCntr = false
@@ -123,9 +156,7 @@ import FolderNameInpt from '../components/FolderNameInpt.vue'
         if (isCntr) {
           switch(e.keyCode) {
             case 67:
-              if (this.selectedFiles) {
-                this.storeSetClipBoard()
-              }
+              this.storeSetClipBoard()
               break;
             case 86: 
               if (this.clipBoardFiles) {
@@ -145,29 +176,5 @@ import FolderNameInpt from '../components/FolderNameInpt.vue'
         } 
       })
     }
-      // ...mapMutations({
-      //   storeAddFolder: 'addFolder', 
-      //   storeRemoveFolder: 'removeFolder',
-      //   storeAddFile: 'addFile'}),
-
-      // addFolder(name) {
-      //   this.storeAddFolder({name, branch: this.drive})
-      // },
-      // reNameFolder(name) {
-      //   console.log(name)
-      // },
-      // openNameInpt() {
-      //   this.NameInptConfig.title = 'New folder'
-      //   this.NameInptConfig.callback = 'addFolder'
-      //   this.$refs.FolderNameInpt.open()
-      // },
-      // reNameInpt() {
-      //   this.NameInptConfig.title = 'Rename folder'
-      //   this.NameInptConfig.callback = 'reNameFolder'
-      //   this.$refs.FolderNameInpt.open()
-      // },
-      // show(e) {
-
-      // }
   }
 </script>

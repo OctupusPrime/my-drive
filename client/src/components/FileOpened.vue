@@ -1,13 +1,12 @@
 <template>
     <v-dialog
         v-model="isOpen"
-        max-width="450">
+        max-width="70vh">
         <v-card>
-        <p v-if="convertFromBase64">
+        <v-card-text v-if="convertFromBase64" class="pa-3 text--primary text-body-1">
             {{convertFromBase64}}
-        </p>
+        </v-card-text>
         <v-img v-else
-            height="250"
             :src="`data:${file.type};base64,${file.data}`">
         </v-img>
 
@@ -24,13 +23,15 @@ export default {
     }),
     computed: {
         convertFromBase64() {
-            if (this.file.type.includes('text')) {
-                const percentEncodedStr = atob(this.file.data).split('').map(function(c) {
-                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                }).join('');
+            if (this.file.type) {
+                if (this.file.type.includes('text')) {
+                    const percentEncodedStr = atob(this.file.data).split('').map(function(c) {
+                        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                    }).join('');
 
 
-                return decodeURIComponent(percentEncodedStr)
+                    return decodeURIComponent(percentEncodedStr)
+                }
             }
             return ''
         }
