@@ -1,29 +1,30 @@
 <template>
     <div style="min-height: 70vh"
         @click="undoSelect($event)">
-        <FolderItemsList 
-            :itemsArr="folder.children" 
-            @clickCallback="selectFolder"
-            @dbClickCallback="openFolder"
-            v-if="folder.children">
-            Folders
-        </FolderItemsList>
+        <div v-if="isLoaded && folder">
+            <FolderItemsList 
+                :itemsArr="folder.children" 
+                @clickCallback="selectFolder"
+                @dbClickCallback="openFolder"
+                v-if="folder.children.length">
+                Folders
+            </FolderItemsList>
 
-        <FolderItemsList 
-            :itemsArr="folder.data"
-            icon="mdi-file"
-            @clickCallback="selectFile"
-            @dbClickCallback="openFile"
-            v-if="folder.data">
-            Files
-        </FolderItemsList>
-
+            <FolderItemsList 
+                :itemsArr="folder.data"
+                icon="mdi-file"
+                @clickCallback="selectFile"
+                @dbClickCallback="openFile"
+                v-if="folder.data.length">
+                Files
+            </FolderItemsList>
+        </div>
         <FileOpened :file="currentFile" ref="openedFile"></FileOpened>
     </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import FolderItemsList from '../components/FolderItemsList.vue'
 import FileOpened from '../components/FileOpened.vue'
 
@@ -40,8 +41,20 @@ export default {
     data: () => ({
         currentFile: {}
     }),
+    watch: {
+        isLoaded() {
+            if(this.isLoaded) {
+                this.$nextTick(() => {
+                    if(!this.folder) {
+                        this.$router.push({name: 'Drive'})
+                    }
+                })
+            }
+        }
+    },
     computed: {
-        ...mapGetters(['getFolder', 'selectedFiles']),
+        ...mapState(['isLoaded']),
+        ...mapGetters(['getFolder']),
         folder() {
             let obj = this.getFolder(this.$route.params.id)
             this.storeSetCurrentBranch(obj)
@@ -87,14 +100,6 @@ export default {
                 this.storeClearSelectFile()
             }
         }
-    },
-    mounted() {
-        window.addEventListener('keyup', (e) => {
-            this.isShiftPressed = e.shiftKey
-        })
-        window.addEventListener('keydown', (e) => {
-            this.isShiftPressed = e.shiftKey
-        })
     }
 }
 </script>

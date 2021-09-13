@@ -40,7 +40,7 @@ export default {
         currentFile: {}
     }),
     computed: {
-        ...mapState({storeDrive: 'drive', selectedFiles: 'selectedFiles'}),
+        ...mapState({storeDrive: 'drive'}),
         drive() {
             this.storeSetCurrentBranch(this.storeDrive._root)
             return this.storeDrive._root

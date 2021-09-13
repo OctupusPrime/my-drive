@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import axios from 'axios'
+import axios from 'axios'
 
 import Tree from '../classes/Tree'
 
@@ -9,6 +9,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     drive: new Tree(),
+    isLoaded: false,
     currentBranch: {},
 
     selectedFiles: {
@@ -20,7 +21,8 @@ export default new Vuex.Store({
   mutations: {
     //drive
     INIT_DRIVE(state, jsonDrive) {
-      state.drive = new Tree(jsonDrive)
+      state.isLoaded = true
+      state.drive = new Tree(JSON.parse(jsonDrive)._root)
     },
     //folders
     ADD_FOLDER(state, name) {
@@ -118,9 +120,10 @@ export default new Vuex.Store({
           field: 'isCut',
           value: isCut
       })
-
-      state.clipBoardFiles = JSON.parse(JSON.stringify(state.selectedFiles))
-      state.clipBoardFiles.isCut = isCut
+      if (state.selectedFiles.children || state.selectedFiles.data) {
+        state.clipBoardFiles = JSON.parse(JSON.stringify(state.selectedFiles))
+        state.clipBoardFiles.isCut = isCut
+      }
     },
     CLEAR_CLIP_BOARD(state) {
       state.clipBoardFiles = {}
@@ -144,8 +147,8 @@ export default new Vuex.Store({
   },
   actions: {
     async storeGetDrive({commit}) {
-      // const drive = await axios.get('http://localhost:3000/api/drive')
-      commit('INIT_DRIVE', '')
+      const drive = await axios.get('http://localhost:3000/api/drive')
+      commit('INIT_DRIVE', drive.data.data)
     },
     //drive
     storeAddFolder({commit}, name) {
