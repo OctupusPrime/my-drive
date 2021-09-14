@@ -6,6 +6,7 @@
             rounded>
             <v-list-item
             link
+            :disabled="!isLoaded"
             @click="openCreateFolder">
             <v-list-item-content>
                 <v-list-item-title class="text-body-1">
@@ -15,6 +16,7 @@
             </v-list-item>
             <v-list-item
             link
+            :disabled="!isLoaded"
             @click="openUploadFiles">
             <v-list-item-content>
                 <v-list-item-title class="text-body-1">
@@ -26,8 +28,9 @@
         </v-card>
         <v-card rounded="2" class="mt-2" v-if="clipBoardFiles.children  || clipBoardFiles.data">
         <v-card-title class="pb-0 justify-center">Clip board</v-card-title>
-        <v-divider class="mt-2"></v-divider>
+        <v-divider class="pt-2"></v-divider>
         <v-list
+            class="pa-0"
             dense>
             <div v-if="clipBoardFiles.children">
             <v-card-title class="py-0 text-h6">Folders</v-card-title>
@@ -52,11 +55,11 @@
         </v-list>
         <v-card-actions class="pt-0">
             <v-btn
-            text
-            color="red"
-            block
-            @click="storeClearClipBoard">
-            Clear
+                text
+                color="red"
+                block
+                @click="storeClearClipBoard">
+                Clear
             </v-btn>
         </v-card-actions>
         </v-card>
@@ -67,6 +70,9 @@
 import { mapState, mapActions } from 'vuex'
 export default {
     name: 'TheDriveLeftCol',
+    props: {
+        isLoaded: Boolean
+    },
     computed: {
       ...mapState(['clipBoardFiles']),
     },

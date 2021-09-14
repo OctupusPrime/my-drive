@@ -1,9 +1,9 @@
 <template>
     <v-container class="px-0">
-        <h3 class="ml-2">
+        <h3 class="ml-5">
             <slot></slot>
         </h3>
-        <v-row  class="my-2">
+        <v-row  class="ma-1">
             <v-btn  v-for="(item, index) in itemsArr" 
                 :key="item.id"
                 depressed

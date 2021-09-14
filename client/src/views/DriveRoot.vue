@@ -1,5 +1,5 @@
 <template>
-    <div style="min-height: 70vh"
+    <v-container class="flex-grow-1 flex-shrink-0 pa-0"
         @click="undoSelect($event)">
         <FolderItemsList 
             :itemsArr="drive.children" 
@@ -19,7 +19,7 @@
         </FolderItemsList>
 
         <FileOpened :file="currentFile" ref="openedFile"></FileOpened>
-    </div>
+    </v-container>
 </template>
 
 <script>

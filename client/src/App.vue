@@ -2,7 +2,8 @@
 <v-app>
   <v-app-bar 
     app 
-    flat>
+    flat
+    color="white">
     <v-container>
       <v-toolbar-title class="font-weight-bold text-h5">
         My Drive

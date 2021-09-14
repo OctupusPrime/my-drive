@@ -1,5 +1,5 @@
 <template>
-    <div style="min-height: 70vh"
+    <v-container class="flex-grow-1 flex-shrink-0 pa-0"
         @click="undoSelect($event)">
         <div v-if="isLoaded && folder">
             <FolderItemsList 
@@ -20,11 +20,11 @@
             </FolderItemsList>
         </div>
         <FileOpened :file="currentFile" ref="openedFile"></FileOpened>
-    </div>
+    </v-container>
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import FolderItemsList from '../components/FolderItemsList.vue'
 import FileOpened from '../components/FileOpened.vue'
 
@@ -36,7 +36,8 @@ export default {
         FileOpened
     },
     props: {
-        isShiftPressed: Boolean
+        isShiftPressed: Boolean,
+        isLoaded: Boolean
     },
     data: () => ({
         currentFile: {}
@@ -53,7 +54,6 @@ export default {
         }
     },
     computed: {
-        ...mapState(['isLoaded']),
         ...mapGetters(['getFolder']),
         folder() {
             let obj = this.getFolder(this.$route.params.id)

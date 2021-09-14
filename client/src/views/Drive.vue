@@ -2,24 +2,32 @@
   <v-container>
     <v-row>
       <TheDriveLeftCol 
+        :isLoaded="isLoaded"
         @openCreateFolder="openCreateFolder"
         @openUploadFiles="openUploadFiles"
       ></TheDriveLeftCol>
       <v-col>
-        <v-card rounded="2" color="white" class="px-3 py-1" :loading="!isLoaded">
+        <v-card 
+          rounded="2" 
+          color="white" 
+          class="pa-0 d-flex flex-column align-stretch"
+          style="height: 70vh; overflow: auto;" 
+          :loading="!isLoaded">
 
         <template slot="progress">
           <v-progress-linear
             color="primary"
             height="10"
-            rounded
-            indeterminate
-          ></v-progress-linear>
+            indeterminate>
+          </v-progress-linear>
         </template>
               
           <FolderPath :pathArr="getFolderPath" v-if="isLoaded"></FolderPath>
 
-          <router-view :isShiftPressed="isShift"></router-view>
+          <router-view 
+            :isShiftPressed="isShift"
+            :isLoaded="isLoaded">
+          </router-view>
 
         <FolderNameInpt :title="NameInptConfig.title" 
                         :callback="NameInptConfig.callback" 
