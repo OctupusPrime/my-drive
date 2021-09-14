@@ -27,7 +27,7 @@
         </v-list>
         </v-card>
         <v-card rounded="2" class="mt-2" v-if="clipBoardFiles.children  || clipBoardFiles.data">
-        <v-card-title class="pb-0 justify-center">Clip board</v-card-title>
+        <v-card-title class="pb-2 justify-center">Clip board</v-card-title>
         <v-divider class="pt-2"></v-divider>
         <v-list
             class="pa-0"
@@ -53,21 +53,12 @@
                 </v-list-item>
             </div>
         </v-list>
-        <v-card-actions class="pt-0">
-            <v-btn
-                text
-                color="red"
-                block
-                @click="storeClearClipBoard">
-                Clear
-            </v-btn>
-        </v-card-actions>
         </v-card>
     </v-col>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 export default {
     name: 'TheDriveLeftCol',
     props: {
@@ -77,7 +68,6 @@ export default {
       ...mapState(['clipBoardFiles']),
     },
     methods: {
-        ...mapActions(['storeClearClipBoard']),
         openCreateFolder() {
             this.$emit('openCreateFolder')
         },

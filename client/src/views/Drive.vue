@@ -113,7 +113,7 @@ import FolderNameInpt from '../components/FolderNameInpt.vue'
       window.addEventListener('keydown', (e) => {
         this.isShift = e.shiftKey
         isCtrl = e.ctrlKey
-        if (e.key === 'del') {
+        if (e.key === 'Delete') {
           this.storeDeleteSelectFile()
         }
         if (isCtrl) {

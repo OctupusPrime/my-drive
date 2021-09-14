@@ -175,10 +175,6 @@ export default new Vuex.Store({
     storeSetClipBoard({commit}, isCut) {
       commit('SET_CLIP_BOARD', isCut)
     },
-    storeClearClipBoard({commit}) {
-      commit('CLEAR_SELECTED_FILE')
-      commit('CLEAR_CLIP_BOARD')
-    },
     storeInsertClipBoard({commit}) {
       commit('CLEAR_SELECTED_FILE')
       commit('ADD_CLIP_FOLDER')
