@@ -1,19 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Home from '../views/Home.vue'
+import Drive from '../views/Drive.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/drive',
-    component: () => import('../views/Drive.vue'),
+    component: Drive,
     children: [
       {
         path: '/',

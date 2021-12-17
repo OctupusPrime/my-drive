@@ -190,7 +190,7 @@ export default new Vuex.Store({
 
     storeDontShowTips({commit}) {
       commit('DONT_SHOW_TIPS')
-      commit('HIDE_TIPS', 'false')
+      commit('CHANGE_SHOW_TIPS', 'false')
     },
     storeHideTips({commit}) {
       commit('CHANGE_SHOW_TIPS', 'false')
