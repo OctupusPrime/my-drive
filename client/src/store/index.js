@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
 
+import {data} from './data.js'
 import Tree from '../classes/Tree'
 
 Vue.use(Vuex)
@@ -16,7 +16,9 @@ export default new Vuex.Store({
       folderIndex: [],
       fileIndex: []
     },
-    clipBoardFiles: {}
+    clipBoardFiles: {},
+
+    isShowTips: localStorage.getItem('isShowTips') || 'true'
   },
   mutations: {
     //drive
@@ -143,12 +145,18 @@ export default new Vuex.Store({
           this.commit('ADD_FILE', element)
         })  
       }
+    },
+
+    DONT_SHOW_TIPS() {
+      localStorage.setItem('isShowTips', JSON.stringify(false));
+    },
+    CHANGE_SHOW_TIPS(state, value) {
+      state.isShowTips = value
     }
   },
   actions: {
     async storeGetDrive({commit}) {
-      const drive = await axios.get('http://localhost:3000/api/drive')
-      commit('INIT_DRIVE', drive.data.data)
+      commit('INIT_DRIVE', data)
     },
     //drive
     storeAddFolder({commit}, name) {
@@ -178,11 +186,25 @@ export default new Vuex.Store({
     storeInsertClipBoard({commit}) {
       commit('CLEAR_SELECTED_FILE')
       commit('ADD_CLIP_FOLDER')
+    },
+
+    storeDontShowTips({commit}) {
+      commit('DONT_SHOW_TIPS')
+      commit('HIDE_TIPS', 'false')
+    },
+    storeHideTips({commit}) {
+      commit('CHANGE_SHOW_TIPS', 'false')
+    },
+    storeShowTips({commit}) {
+      commit('CHANGE_SHOW_TIPS', 'true')
     }
   },
   getters: {
     getFolder: (state) => (id) => {
       return state.drive.traverseBF(id)
+    },
+    getShowTips(state) {
+      return JSON.parse(state.isShowTips)
     }
   }
 })

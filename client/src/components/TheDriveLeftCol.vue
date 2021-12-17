@@ -24,6 +24,15 @@
                 </v-list-item-title>
             </v-list-item-content>
             </v-list-item>
+            <v-list-item
+            link
+            @click="storeShowTips()">
+            <v-list-item-content>
+                <v-list-item-title class="text-body-1">
+                Show tips
+                </v-list-item-title>
+            </v-list-item-content>
+            </v-list-item>
         </v-list>
         </v-card>
         <v-card rounded="2" class="mt-2" v-if="clipBoardFiles.children  || clipBoardFiles.data">
@@ -58,7 +67,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 export default {
     name: 'TheDriveLeftCol',
     props: {
@@ -68,6 +77,9 @@ export default {
       ...mapState(['clipBoardFiles']),
     },
     methods: {
+        ...mapActions([
+            'storeShowTips'
+        ]),
         openCreateFolder() {
             this.$emit('openCreateFolder')
         },
